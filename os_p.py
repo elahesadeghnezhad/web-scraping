@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-import os
 import csv
+import os
+from threading import Thread, Lock
 
 base_url = "https://pixabay.com/api/"
 num_images = 10
@@ -11,14 +12,36 @@ params = {
     "image_type": "vector",
     "per_page": num_images
 }
+thread_lock = Lock()
 
 def scrape(base_url, params):
     response = requests.get(base_url, params=params)
     data = response.json()
     graphics = data["hits"]
-    # Create a directory for each graphic
-    graphic_directory = os.path.join("VectorGraphics", graphic_name)
-    os.makedirs(graphic_directory, exist_ok=True)
+
+    threads = []
+    for graphic in graphics:
+        graphic_name = graphic["tags"]
+        graphic_link = graphic["pageURL"]
+        graphic_userid = graphic["user_id"]
+
+        # Create a directory for each graphic
+        graphic_directory = os.path.join("VectorGraphics", graphic_name)
+        os.makedirs(graphic_directory, exist_ok=True)
+
+        # Create a thread for downloading the vector graphic
+        download_thread = Thread(target=download_image, args=(graphic_link, graphic_name, graphic_directory))
+        threads.append(download_thread)
+        download_thread.start()
+
+        # Create a thread for writing metadata
+        metadata_thread = Thread(target=write_metadata, args=(graphic_name, graphic_link, graphic_directory, graphic_userid))
+        threads.append(metadata_thread)
+        metadata_thread.start()
+
+    # Wait for all threads to complete
+    for thread in threads:
+        thread.join()
 
 def download_image(image_url, image_title, category_directory):
     response = requests.get(image_url)
