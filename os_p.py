@@ -18,3 +18,9 @@ def scrape(base_url, params):
     # Create a directory for each graphic
     graphic_directory = os.path.join("VectorGraphics", graphic_name)
     os.makedirs(graphic_directory, exist_ok=True)
+
+def download_image(image_url, image_title, category_directory):
+    response = requests.get(image_url)
+    with open(os.path.join(category_directory, f"{image_title}.svg"), "wb") as file:
+        file.write(response.content)
+    print(f"Downloaded image: {image_title}")
