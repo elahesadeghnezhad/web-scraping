@@ -1,16 +1,20 @@
 import requests
 from bs4 import BeautifulSoup
+import os
 
-proxies = {
-    'http': 'http://127.0.0.1:2081',
-    'https': 'http://127.0.0.1:2081',
-}
-api_key = "41944365-6514a9c6e238a11db6ad51ba1"
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+base_url = "https://pixabay.com/api/"
+num_images = 10
+api_key = "41944678-39b6d49cec7fd580a769da914"
+params = {
+    "key": api_key,
+    "image_type": "vector",
+    "per_page": num_images
 }
 
-url = "https://pixabay.com/"
-responds = requests.get(url=url,proxies=proxies)
-print(responds.content)
-soup = BeautifulSoup(response.text, "html.parser")
+def scrape(base_url, params):
+    response = requests.get(base_url, params=params)
+    data = response.json()
+    graphics = data["hits"]
+    # Create a directory for each graphic
+    graphic_directory = os.path.join("VectorGraphics", graphic_name)
+    os.makedirs(graphic_directory, exist_ok=True)
