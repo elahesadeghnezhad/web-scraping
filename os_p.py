@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import os
-from threading import Thread, Lock
+from threading import Thread
 
 base_url = "https://pixabay.com/api/"
 num_images = 10
@@ -12,7 +12,6 @@ params = {
     "image_type": "vector",
     "per_page": num_images
 }
-thread_lock = Lock()
 
 def scrape(base_url, params):
     response = requests.get(base_url, params=params)
