@@ -1,10 +1,10 @@
 import requests
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 import csv
 import os
 from threading import Thread
 
-base_url = "https://pixabay.com/api/"
+urlll = "https://pixabay.com/api/"
 num_images = 10
 api_key = "41944678-39b6d49cec7fd580a769da914"
 params = {
@@ -12,9 +12,9 @@ params = {
     "image_type": "vector",
     "per_page": num_images
 }
-
-def scrape(base_url, params):
-    response = requests.get(base_url, params=params)
+# scrape from pixabay
+def scrape(urlll, params):
+    response = requests.get(urlll, params=params)
     data = response.json()
     graphics = data["hits"]
 
@@ -25,7 +25,7 @@ def scrape(base_url, params):
         graphic_userid = graphic["user_id"]
 
         # Create a directory for each graphic
-        graphic_directory = os.path.join("VectorGraphics", graphic_name)
+        graphic_directory = os.path.join("Graphics", graphic_name)
         os.makedirs(graphic_directory, exist_ok=True)
 
         # Create a thread for downloading the vector graphic
@@ -65,3 +65,5 @@ def write_metadata(title, url, directory, user_id):
             writer.writerow([title, url, user_id])
     except Exception as e:
         print(f"Error writing metadata to CSV: {e}")
+        
+scrape(urlll,params)
