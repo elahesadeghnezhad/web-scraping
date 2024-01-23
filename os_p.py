@@ -46,7 +46,6 @@ def download_image(image_url, image_title, category_directory):
     response = requests.get(image_url)
     with open(os.path.join(category_directory, f"{image_title}.svg"), "wb") as file:
         file.write(response.content)
-    print(f"Downloaded image: {image_title}")
 
 def write_metadata(title, url, directory, user_id):
     csv_file = os.path.join(directory, "metadata.csv")
