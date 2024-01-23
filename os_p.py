@@ -58,9 +58,9 @@ def write_metadata(title, url, directory, user_id):
         
         # Write header if the file doesn't exist
         if not is_file_exist:
-            writer.writerow(["Title", "URL"])
+            writer.writerow(["Title"," Url", "Directory", "User_id"])
         
         # Write metadata
-        writer.writerow([ title, url])
+        writer.writerow([title, url, directory, user_id])
     
 scrape(urlll,params)
