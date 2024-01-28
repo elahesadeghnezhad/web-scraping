@@ -18,6 +18,7 @@ def scrape(urlll, params):
     data = response.json()
     graphics = data["hits"]
     threads = []
+    # extracting every image data 
     for graphic in graphics:
         graphic_name = graphic["tags"]
         graphic_link = graphic["pageURL"]
@@ -42,17 +43,15 @@ def download_image(image_url, image_title, category_directory):
         file.write(response.content)
 
 def write_metadata(title, url, directory, user_id):
+    # creat a csv file
     csv_file = os.path.join(directory, "metadata.csv")
     is_file_exist = os.path.isfile(csv_file)
-    
-
+    # open the csv file
     with open("csv_file", "a", newline="") as file:
         writer = csv.writer(file)
         
-        
         if not is_file_exist:
             writer.writerow(["Title"," Url", "Directory", "User_id"])
-        
         
         writer.writerow([title, url, directory, user_id])
     
