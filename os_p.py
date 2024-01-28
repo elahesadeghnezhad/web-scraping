@@ -1,8 +1,7 @@
 import requests
-from bs4 import BeautifulSoup
 import csv
 import os
-from threading import Thread,
+from threading import Thread
 
 urlll = "https://pixabay.com/api/"
 num_images = 10
@@ -14,31 +13,26 @@ params = {
 }
 
 def scrape(urlll, params):
+    # send request to the pixabay
     response = requests.get(urlll, params=params)
     data = response.json()
     graphics = data["hits"]
-
     threads = []
     for graphic in graphics:
         graphic_name = graphic["tags"]
         graphic_link = graphic["pageURL"]
         graphic_userid = graphic["user_id"]
-
-        # Create a directory for each graphic
         graphic_directory = os.path.join("Graphics", graphic_name)
         os.makedirs(graphic_directory, exist_ok=True)
-
-        # Create a thread for downloading the vector graphic
+        # calling dowload_image function
         download_thread = Thread(target=download_image, args=(graphic_link, graphic_name, graphic_directory))
         threads.append(download_thread)
         download_thread.start()
-
-        # Create a thread for writing metadata
+        # calling write_metadata function
         metadata_thread = Thread(target=write_metadata, args=(graphic_name, graphic_link, graphic_directory, graphic_userid))
         threads.append(metadata_thread)
         metadata_thread.start()
-
-    # Wait for all threads to complete
+    
     for thread in threads:
         thread.join()
 
@@ -51,14 +45,16 @@ def write_metadata(title, url, directory, user_id):
     csv_file = os.path.join(directory, "metadata.csv")
     is_file_exist = os.path.isfile(csv_file)
     
+
     with open("csv_file", "a", newline="") as file:
         writer = csv.writer(file)
         
-        # Write header if the file doesn't exist
+        
         if not is_file_exist:
             writer.writerow(["Title"," Url", "Directory", "User_id"])
         
-        # Write metadata
+        
         writer.writerow([title, url, directory, user_id])
     
 scrape(urlll,params)
+print("finish")
